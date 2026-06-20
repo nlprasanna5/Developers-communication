@@ -9,7 +9,7 @@ authRouter
 profileRouter
 - GET /profile/view
 - PATCH /profile/edit
-- PATCH /profile/passowrd
+- PATCH /profile/passowrd.  => forgot password
 
 
 connectionRequestRouter
