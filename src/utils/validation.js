@@ -31,7 +31,22 @@ const validateEditProfileData = (req) => {
 
 };
 
+const validateForgotPasswordData=(req) =>{
+  const {password,confirmPassword,emailId}= req.body;
+
+  if(password !== confirmPassword){
+    throw new Error("password and confirmPassword are not the same")
+  }
+
+  if(!validator.isStrongPassword(password)){
+    throw new Error("Please enter a strong password")
+  }else if(!validator.isEmail(emailId)){
+    throw new Error("Email is not valid")
+  }
+}
+
 module.exports = {
   validateSignUpData,
-  validateEditProfileData
+  validateEditProfileData,
+  validateForgotPasswordData
 };
