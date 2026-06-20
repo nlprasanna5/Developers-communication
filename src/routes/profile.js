@@ -2,6 +2,7 @@ const express = require("express");
 const { userAuth } = require("../middlewares/auth");
 const { validateEditProfileData } = require("../utils/validation");
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 const profileRouter = express.Router();
 
@@ -21,7 +22,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     if (!validateEditProfileData(req)) {
       throw new Error("Invalid Edit Request");
     }
-    const { userId } = req.query;
+    // const { userId } = req.query;
     const loggedInUser = req.user;
 
     Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
@@ -39,6 +40,34 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     //   returnDocument:"after"
     // });
     // console.log("user",user);
+  } catch (err) {
+    res.status(400).send("Error: " + err);
+  }
+});
+
+profileRouter.patch("/profile/password", async (req, res) => {
+  try {
+    const { password, confirmPassword, emailId } = req.body;
+
+    if (password !== confirmPassword) {
+      throw new Error("password and confirm password are not same");
+    }
+
+    const user = await User.findOne({ emailId: emailId });
+
+    console.log("user", user);
+
+    if (user) {
+      user.password = await bcrypt.hash(password, 10);
+
+      await user.save();
+
+      console.log("changed", user);
+    } else {
+      throw new Error("Email not found");
+    }
+
+    res.send("changed password");
   } catch (err) {
     res.status(400).send("Error: " + err);
   }
