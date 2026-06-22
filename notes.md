@@ -10,3 +10,11 @@
 - wirte a dummy auth middleware for all user routes
 
 - Error handling
+
+
+- what is index in mongo?
+- Why do we need index in mongodb?
+- what is the advantage and disadvantage of using creating index in mongodb?
+
+- $or $query
+- Schema.pre function
