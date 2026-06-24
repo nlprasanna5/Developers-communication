@@ -4,6 +4,7 @@ const { userAuth } = require("../middlewares/auth");
 
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
+const { validateReviewRequest } = require("../utils/validation");
 
 const requestRouter = express.Router();
 
@@ -58,14 +59,12 @@ requestRouter.post(
       });
 
       if (existingConnectionRequest) {
-        
-        res.status(400).json({
+        return res.status(400).json({
           message: "Connection Request already sent",
         });
       }
 
       console.log("hello");
-      
 
       const connectRequest = new ConnectionRequest({
         fromUserId,
@@ -76,11 +75,47 @@ requestRouter.post(
       const connectionData = await connectRequest.save();
 
       res.json({
-        message: `${req.user.firstName} is ${status} in ${toUser.firstName}` ,
+        message: `${req.user.firstName} is ${status} in ${toUser.firstName}`,
         connectionData,
       });
     } catch (err) {
       res.status(400).send("Error" + err.message);
+    }
+  },
+);
+
+requestRouter.post(
+  "/request/review/:status/:requestId",
+  userAuth,
+  async (req, res) => {
+    try {
+      const { status, requestId } = req.params;
+
+      validateReviewRequest(req);
+
+      const connectionData = await ConnectionRequest.findOne({
+        _id: requestId,
+        status: "interested",
+        toUserId: req.user._id,
+      });
+
+      if (!connectionData) {
+        return res.status(404).json({
+          message: "Connection request not found",
+        });
+      }
+
+      connectionData.status = status;
+
+      console.log("connectionData", connectionData);
+
+      await connectionData.save();
+
+      res.send(connectionData);
+    } catch (err) {
+      res.status(400).json({
+        message: err.message
+      });
     }
   },
 );

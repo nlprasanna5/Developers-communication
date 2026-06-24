@@ -28,25 +28,36 @@ const validateEditProfileData = (req) => {
   );
 
   return isEditable;
-
 };
 
-const validateForgotPasswordData=(req) =>{
-  const {password,confirmPassword,emailId}= req.body;
+const validateForgotPasswordData = (req) => {
+  const { password, confirmPassword, emailId } = req.body;
 
-  if(password !== confirmPassword){
-    throw new Error("password and confirmPassword are not the same")
+  if (password !== confirmPassword) {
+    throw new Error("password and confirmPassword are not the same");
   }
 
-  if(!validator.isStrongPassword(password)){
-    throw new Error("Please enter a strong password")
-  }else if(!validator.isEmail(emailId)){
-    throw new Error("Email is not valid")
+  if (!validator.isStrongPassword(password)) {
+    throw new Error("Please enter a strong password");
+  } else if (!validator.isEmail(emailId)) {
+    throw new Error("Email is not valid");
   }
-}
+};
+
+const validateReviewRequest = (req) => {
+  const { status, requestId } = req.params;
+  const allowedStatus = ["rejected", "accepted"];
+
+  if (!allowedStatus.includes(status)) {
+    throw new Error("Status is not allowed");
+  }
+
+
+};
 
 module.exports = {
   validateSignUpData,
   validateEditProfileData,
-  validateForgotPasswordData
+  validateForgotPasswordData,
+  validateReviewRequest
 };

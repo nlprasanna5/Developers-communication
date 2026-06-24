@@ -18,3 +18,4 @@
 
 - $or $query
 - Schema.pre function
+- Options, different options needs to explore
