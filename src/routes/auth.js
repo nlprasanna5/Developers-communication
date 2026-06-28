@@ -1,12 +1,9 @@
-
-const express= require("express");
-const User= require("../models/user");
+const express = require("express");
+const User = require("../models/user");
 const { validateSignUpData } = require("../utils/validation");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 
 const authRouter = express.Router();
-
-
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -35,7 +32,6 @@ authRouter.post("/signup", async (req, res) => {
   }
 });
 
-
 authRouter.post("/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
@@ -52,7 +48,7 @@ authRouter.post("/login", async (req, res) => {
       throw new Error("Invalid credentails");
     } else {
       // create jwt token
-     
+
       const token = await user.getJWT();
 
       console.log("token", token);
@@ -60,7 +56,12 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
       });
-      res.send("Login Successful!");
+
+      const userData = user.toObject();
+
+      delete userData.password;
+
+      res.status(200).json(userData);
     }
   } catch (err) {
     console.log("error", err);
@@ -68,19 +69,17 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
+authRouter.post("/logout", async (req, res) => {
+  try {
+    res.clearCookie("token");
 
-authRouter.post("/logout",async(req,res) => {
-    try{
-        res.clearCookie("token");
+    res.cookie("token", null, {
+      expires: new Date(Date.now()),
+    });
+    res.send("Logout successfully");
+  } catch (err) {
+    res.status(400).send("Error: " + err.message);
+  }
+});
 
-        res.cookie("token",null,{
-            expires: new Date(Date.now())
-        })
-        res.send("Logout successfully")
-
-    }catch(err){
-        res.status(400).send("Error: "+err.message)
-    }
-})
-
-module.exports=authRouter
+module.exports = authRouter;

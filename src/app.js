@@ -1,28 +1,30 @@
 const express = require("express");
 const { connectDb } = require("./config/database");
-const User = require("./models/user");
-const { validateSignUpData } = require("./utils/validation");
-const bcrypt = require("bcrypt");
+
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
+
+const cors = require("cors");
 
 const app = express();
 
-const { userAuth } = require("./middlewares/auth");
-
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 const authRouter = require("./routes/auth");
-const profileRouter= require("./routes/profile");
+const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 
-app.use("/",authRouter);
-app.use("/",profileRouter);
-app.use("/",requestRouter);
-app.use("/",userRouter);
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
+app.use("/", userRouter);
 
 connectDb()
   .then(() => {
@@ -34,8 +36,6 @@ connectDb()
   .catch((err) => {
     console.error("Db connection failed");
   });
-
-
 
 // ******** previous version apis ********
 
