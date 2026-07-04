@@ -111,7 +111,7 @@ requestRouter.post(
 
       await connectionData.save();
 
-      res.send(connectionData);
+      res.status(200).json(connectionData);
     } catch (err) {
       res.status(400).json({
         message: err.message

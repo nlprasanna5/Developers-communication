@@ -23,8 +23,24 @@ authRouter.post("/signup", async (req, res) => {
     };
 
     const user = new User(userDetails);
-    await user.save();
-    res.send("saved successfully");
+    const savedUser = await user.save();
+
+    const token = await savedUser.getJWT();
+
+  
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
+
+    const userData = savedUser.toObject();
+
+    delete userData.password;
+
+    res.status(200).json({
+      message: "Created account successfully",
+      data: userData,
+    });
   } catch (err) {
     console.log("error", err);
 
@@ -65,18 +81,20 @@ authRouter.post("/login", async (req, res) => {
     }
   } catch (err) {
     console.log("error", err);
-    res.status(400).send("Error: " + err);
+    res.status(400).json({
+      message: err.message,
+    });
   }
 });
 
 authRouter.post("/logout", async (req, res) => {
   try {
-    res.clearCookie("token");
+    // res.clearCookie("token");
 
     res.cookie("token", null, {
       expires: new Date(Date.now()),
     });
-    res.send("Logout successfully");
+    res.status(200).json("Logout successfully");
   } catch (err) {
     res.status(400).send("Error: " + err.message);
   }

@@ -63,6 +63,8 @@ const userSchema = new mongoose.Schema(
     },
     photoUrl: {
       type: String,
+      default:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmfiUPX0HzT9eb2yRuTB1Gyn2WUcl7ubvKa4KSJ2tLrw&s=10",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Invalid url");
@@ -80,6 +82,76 @@ const userSchema = new mongoose.Schema(
           throw new Error("Duplicate skills are not allowed");
         }
       },
+    },
+    designation: {
+      type: String,
+    },
+    location: {
+      type: String,
+
+    },
+
+    currentCompany: {
+      type: String,
+    },
+    totalExperience: {
+      type: Number,
+    },
+    socialLinks: {
+      type: Map,
+      of: {
+        type: String,
+        validate: {
+          validator: function (value) {
+            return !value || validator.isURL(value);
+          },
+          message: "Invalid URL",
+        },
+      },
+      default: {},
+    },
+    experience:{
+      type: [{
+        company: {
+          type: String,
+          required: true,
+        },
+        role: {
+          type: String,
+          required: true,
+        },
+        duration: {
+          type: String,
+          required: true,
+        },
+      }],
+      default: [],
+    },
+    projects: {
+      type: [{
+        title: {
+          type: String,
+          required: true,
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+        technologies: {
+          type: [String],
+          required: true,
+        },
+        link: {
+          type: String,
+          validate: {
+            validator: function (value) {
+              return !value || validator.isURL(value);
+            },
+            message: "Invalid URL",
+          },
+        },
+      }],
+      default: [],
     },
   },
   {

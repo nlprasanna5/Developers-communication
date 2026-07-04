@@ -13,18 +13,12 @@ const validateSignUpData = (req) => {
 };
 
 const validateEditProfileData = (req) => {
-  const allowedEditFields = [
-    "firstName",
-    "lastName",
-    "about",
-    "gender",
-    "age",
-    "skills",
-    "photoUrl",
-  ];
+  
+
+  const notAllowedFields=["emailId","password"]
 
   const isEditable = Object.keys(req.body).every((key) =>
-    allowedEditFields.includes(key),
+    !notAllowedFields.includes(key),
   );
 
   return isEditable;

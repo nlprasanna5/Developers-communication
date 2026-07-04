@@ -16,6 +16,9 @@ const USER_SAFE_DATA = [
   "gender",
 ];
 
+const EXCLUDE_FIELDS = ["-emailId", "-password","-phoneNumber"];
+
+
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
@@ -23,7 +26,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     const allRequests = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
-    }).populate("fromUserId", USER_SAFE_DATA);
+    }).populate("fromUserId", EXCLUDE_FIELDS);
 
     res.status(200).json({
       message: "Success",
@@ -46,8 +49,8 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         { toUserId: loggedInUser._id, status: "accepted" },
       ],
     })
-      .populate("fromUserId", USER_SAFE_DATA)
-      .populate("toUserId", USER_SAFE_DATA);
+      .populate("fromUserId", EXCLUDE_FIELDS)
+      .populate("toUserId", EXCLUDE_FIELDS);
 
     const transformedData = connectionData.map((data) => {
       if (data.fromUserId._id.toString() === loggedInUser._id.toString()) {
@@ -100,13 +103,11 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
         { _id: { $ne: loggedInUser._id } },
       ],
     })
-      .select(USER_SAFE_DATA)
+      .select(EXCLUDE_FIELDS)
       .skip(skipCount)
       .limit(limit);
 
-    res.status(200).json({
-      data: feedUsers,
-    });
+    res.status(200).json(feedUsers);
   } catch (err) {
     res.status(400).json({
       message: err.message,
