@@ -30,8 +30,8 @@ authRouter.post("/signup", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      sameSite: "None",
-      expires: new Date(Date.now() + 8 * 3600000),
+      sameSite: "lax",
+      maxAge: 8 * 60 * 60 * 1000,
     });
 
     const userData = savedUser.toObject();
@@ -73,8 +73,8 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: false,
-        sameSite: "None",
-        expires: new Date(Date.now() + 8 * 3600000),
+        sameSite: "lax",
+        maxAge: 8 * 60 * 60 * 1000,
       });
 
       const userData = user.toObject();
