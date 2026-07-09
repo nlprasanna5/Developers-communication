@@ -27,18 +27,18 @@ authRouter.post("/signup", async (req, res) => {
 
     const token = await savedUser.getJWT();
 
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: false,
-    //   sameSite: "lax",
-    //   maxAge: 8 * 60 * 60 * 1000,
-    // });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: false,
+      sameSite: "lax",
       maxAge: 8 * 60 * 60 * 1000,
     });
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "None",
+    //   maxAge: 8 * 60 * 60 * 1000,
+    // });
 
     const userData = savedUser.toObject();
 
@@ -76,19 +76,19 @@ authRouter.post("/login", async (req, res) => {
 
       console.log("token", token);
 
-      // res.cookie("token", token, {
-      //   httpOnly: true,
-      //   secure: false,
-      //   sameSite: "lax",
-      //   maxAge: 8 * 60 * 60 * 1000,
-      // });
-
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true,
-        sameSite: "None",
+        secure: false,
+        sameSite: "lax",
         maxAge: 8 * 60 * 60 * 1000,
       });
+
+      // res.cookie("token", token, {
+      //   httpOnly: true,
+      //   secure: true,
+      //   sameSite: "None",
+      //   maxAge: 8 * 60 * 60 * 1000,
+      // });
 
       const userData = user.toObject();
 
