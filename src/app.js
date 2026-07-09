@@ -30,17 +30,8 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  console.log("Cookie Header:", req.headers.cookie);
-  console.log("Parsed Cookies:", req.cookies);
-  next();
-});
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   }),
-// );
+
+
 
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
