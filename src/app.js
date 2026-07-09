@@ -48,12 +48,12 @@ app.use("/", userRouter);
 connectDb()
   .then(() => {
     console.log("Db connected successfully");
-    app.listen(process.env.PORT, (req, res) => {
+    app.listen(4000, (req, res) => {
       console.log("Server created successfully");
     });
   })
   .catch((err) => {
-    console.error("Db connection failed");
+    console.error("Db connection failed",err);
   });
 
 // ******** previous version apis ********
