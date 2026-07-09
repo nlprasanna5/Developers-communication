@@ -4,6 +4,8 @@ const { connectDb } = require("./config/database");
 const cookieParser = require("cookie-parser");
 
 const cors = require("cors");
+require("dotenv").config();
+
 
 const app = express();
 const allowedOrigins = [
@@ -19,6 +21,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -45,7 +48,7 @@ app.use("/", userRouter);
 connectDb()
   .then(() => {
     console.log("Db connected successfully");
-    app.listen(4000, (req, res) => {
+    app.listen(process.env.PORT, (req, res) => {
       console.log("Server created successfully");
     });
   })
