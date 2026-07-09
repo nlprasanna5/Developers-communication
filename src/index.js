@@ -43,16 +43,22 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-connectDb()
-  .then(() => {
-    console.log("Db connected successfully");
-    app.listen(4000, (req, res) => {
-      console.log("Server created successfully");
-    });
-  })
-  .catch((err) => {
-    console.error("Db connection failed",err);
-  });
+// connectDb()
+//   .then(() => {
+//     console.log("Db connected successfully");
+//     app.listen(4000, (req, res) => {
+//       console.log("Server created successfully");
+//     });
+//   })
+//   .catch((err) => {
+//     console.error("Db connection failed",err);
+//   });
+
+
+connectDb().catch((err) => {
+  console.error("Db connection failed", err);
+});
+
 
 // ******** previous version apis ********
 
