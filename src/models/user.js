@@ -153,6 +153,14 @@ const userSchema = new mongoose.Schema(
       }],
       default: [],
     },
+    isPremium:{
+      type:Boolean,
+      default:false,
+    },
+    membershipType:{
+      type:String,
+    },
+    
   },
   {
     timestamps: true,
