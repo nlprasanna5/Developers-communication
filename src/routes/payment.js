@@ -93,7 +93,7 @@ paymentRouter.get("/payment/verify",userAuth,async(req,res) => {
         return res.json({isPremium:true})
     }
 
-    return res.json({isPremium:true})
+    return res.json({isPremium:false})
 })
 
 module.exports = paymentRouter;
