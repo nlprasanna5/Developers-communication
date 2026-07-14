@@ -1,7 +1,9 @@
 const express = require("express");
+const initializeSocket = require("./utils/socket");
 const { connectDb } = require("./config/database");
 
 const cookieParser = require("cookie-parser");
+const http = require("http");
 
 const cors = require("cors");
 require("dotenv").config();
@@ -38,18 +40,29 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
-const paymentRouter= require("./routes/payment")
+const paymentRouter= require("./routes/payment");
+const chatRouter= require("./routes/chat");
+
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRouter);
+app.use("/", chatRouter);
+
+const server = http.createServer(app);
+console.log("Before initializeSocket");
+initializeSocket(server);
+console.log("After initializeSocket");
+
+
+
 
 connectDb()
   .then(() => {
     console.log("Db connected successfully");
-    app.listen(4000, (req, res) => {
+    server.listen(4000, (req, res) => {
       console.log("Server created successfully");
     });
   })
