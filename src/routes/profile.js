@@ -1,9 +1,13 @@
 const express = require("express");
 const { userAuth } = require("../middlewares/auth");
-const { validateEditProfileData, validateForgotPasswordData } = require("../utils/validation");
+const {
+  validateEditProfileData,
+  validateForgotPasswordData,
+} = require("../utils/validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const calculateProfileStrength = require("../utils/helpers");
+const ConnetionRequest = require("../models/connectionRequest");
 
 const profileRouter = express.Router();
 
@@ -11,14 +15,50 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
 
-        const strengthDetails =
-      calculateProfileStrength(user);
+    const strengthDetails = calculateProfileStrength(user);
 
-      console.log("strengthDetails",strengthDetails);
-      
+    console.log("strengthDetails", strengthDetails);
 
     // res.status(200).json(user);
-    res.status(200).json({data:user,strengthDetails});
+    res.status(200).json({ data: user, strengthDetails });
+  } catch (err) {
+    console.log("error", err);
+    res.status(400).send("Error: " + err);
+  }
+});
+
+// profile by id
+profileRouter.get("/profile/view/:connectionId", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    const {connectionId} = req.params;
+
+    const isConnected = await ConnetionRequest.findOne({
+      $or: [
+        {
+          toUserId: user?._id,
+          fromUserId: connectionId,
+          status: "accepted",
+        },
+        {
+          toUserId: connectionId,
+          fromUserId: user?._id,
+          status: "accepted",
+        },
+      ],
+    });
+
+    if (!isConnected) {
+      throw new Error("You are not friends");
+    }
+
+    const targetUserDetails = await User.findOne({ _id: connectionId });
+
+    const strengthDetails = calculateProfileStrength(targetUserDetails);
+
+    console.log("strengthDetails", strengthDetails);
+    // res.status(200).json(user);
+    res.status(200).json({ data: targetUserDetails, strengthDetails });
   } catch (err) {
     console.log("error", err);
     res.status(400).send("Error: " + err);
@@ -50,7 +90,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     // console.log("user",user);
   } catch (err) {
     res.status(400).json({
-      message:err.message
+      message: err.message,
     });
   }
 });
