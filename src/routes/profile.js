@@ -3,6 +3,7 @@ const { userAuth } = require("../middlewares/auth");
 const { validateEditProfileData, validateForgotPasswordData } = require("../utils/validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const calculateProfileStrength = require("../utils/helpers");
 
 const profileRouter = express.Router();
 
@@ -10,7 +11,14 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
 
-    res.status(200).json(user);
+        const strengthDetails =
+      calculateProfileStrength(user);
+
+      console.log("strengthDetails",strengthDetails);
+      
+
+    // res.status(200).json(user);
+    res.status(200).json({data:user,strengthDetails});
   } catch (err) {
     console.log("error", err);
     res.status(400).send("Error: " + err);
