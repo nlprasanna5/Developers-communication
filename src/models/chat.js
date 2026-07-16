@@ -11,16 +11,22 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    seen: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
 
 const chatSchema = new mongoose.Schema({
-  participants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
-  }],
+  participants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+  ],
   messages: [messageSchema],
 });
 
